@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Real-time STT Test</title>
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; margin-top: 2rem; }
+        #status { margin: 1rem; font-weight: bold; }
+        #transcript { margin-top: 1rem; padding: 1rem; border: 1px solid #ccc; width: 80%; min-height: 100px; background-color: #f9f9f9; }
+        button { padding: 0.5rem 1rem; font-size: 1rem; margin: 0.5rem; }
+    </style>
+</head>
+<body>
+    <h1>Real-time Speech-to-Text Test</h1>
+    <div>
+        <button id="startButton">Start Listening</button>
+        <button id="stopButton" disabled>Stop Listening</button>
+    </div>
+    <div id="status">Status: Not Connected</div>
+    <h2>Transcript:</h2>
+    <div id="transcript"></div>
+
+    <script>
+        const startButton = document.getElementById('startButton');
+        const stopButton = document.getElementById('stopButton');
+        const statusDiv = document.getElementById('status');
+        const transcriptDiv = document.getElementById('transcript');
+
+        let websocket;
+        let audioContext;
+        let scriptProcessor;
+        let mediaStream;
+
+        const connectWebSocket = () => {
+            const wsUrl = "ws://127.0.0.1:8000/ws/stt";
+            websocket = new WebSocket(wsUrl);
+
+            websocket.onopen = () => {
+                console.log("WebSocket connection established.");
+                statusDiv.textContent = "Status: Connected. Ready to start.";
+                startButton.disabled = false;
+            };
+
+            websocket.onmessage = (event) => {
+                console.log("Received text:", event.data);
+                transcriptDiv.textContent += event.data + " ";
+            };
+
+            websocket.onclose = () => {
+                console.log("WebSocket connection closed.");
+                statusDiv.textContent = "Status: Disconnected.";
+                stopAudio();
+            };
+
+            websocket.onerror = (error) => {
+                console.error("WebSocket error:", error);
+                statusDiv.textContent = "Status: Connection Error.";
+                stopAudio();
+            };
+        };
+
+        const startAudio = async () => {
+            if (!websocket || websocket.readyState !== WebSocket.OPEN) {
+                alert("WebSocket is not connected. Please ensure the backend server is running.");
+                return;
+            }
+
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                
+                audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+                const source = audioContext.createMediaStreamSource(mediaStream);
+                
+                // The buffer size affects latency.
+                const bufferSize = 2048;
+                scriptProcessor = audioContext.createScriptProcessor(bufferSize, 1, 1);
+
+                scriptProcessor.onaudioprocess = (e) => {
+                    if (websocket.readyState === WebSocket.OPEN) {
+                        const inputData = e.inputBuffer.getChannelData(0);
+                        // The data is Float32, we need to convert it to 16-bit PCM (Int16)
+                        const pcmData = new Int16Array(inputData.length);
+                        for (let i = 0; i < inputData.length; i++) {
+                            let s = Math.max(-1, Math.min(1, inputData[i]));
+                            pcmData[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+                        }
+                        websocket.send(pcmData.buffer);
+                    }
+                };
+
+                source.connect(scriptProcessor);
+                scriptProcessor.connect(audioContext.destination);
+
+                startButton.disabled = true;
+                stopButton.disabled = false;
+                statusDiv.textContent = "Status: Listening...";
+                transcriptDiv.textContent = ""; // Clear previous transcript
+
+            } catch (err) {
+                console.error("Error getting audio stream:", err);
+                alert("Could not access the microphone. Please grant permission.");
+            }
+        };
+
+        const stopAudio = () => {
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+            }
+            if (audioContext) {
+                audioContext.close();
+            }
+            if (scriptProcessor) {
+                scriptProcessor.disconnect();
+            }
+            startButton.disabled = false;
+            stopButton.disabled = true;
+            statusDiv.textContent = "Status: Connected. Ready to start.";
+        };
+
+        startButton.onclick = startAudio;
+        stopButton.onclick = stopAudio;
+
+        // Automatically connect when the page loads
+        connectWebSocket();
+
+    </script>
+</body>
+</html>

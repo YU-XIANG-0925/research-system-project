@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>演講腳本自動標記系統 - 提詞模式</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="presenter-view">
+
+        <div id="upload-panel" class="panel">
+            <div class="panel-title">
+                <span>上傳與控制</span>
+            </div>
+            <div id="upload-area">
+                <span>📂 點擊此處上傳講稿 (.txt)</span>
+            </div>
+            <input type="file" id="script-input" accept=".txt" style="display: none;" />
+            <button id="process-btn" disabled>開始自動標記</button>
+            <div id="loading-indicator" style="display: none;">處理中，請稍候...</div>
+        </div>
+        
+        <div id="gesture-cue-panel" class="panel">
+            <div class="panel-title">手勢提示 (Gesture Cues)</div>
+            <div id="gesture-display" class="placeholder">此處將顯示建議手勢</div>
+        </div>
+
+        <div id="presenter-notes-panel" class="panel">
+            <div class="panel-title">提詞區 (Presenter Notes)</div>
+            <div id="notes-content">
+                <p>請先上傳您的講稿檔案，標記後的內容將會顯示在這裡。</p>
+            </div>
+        </div>
+
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
