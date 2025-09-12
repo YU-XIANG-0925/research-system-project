@@ -1,14 +1,22 @@
-from openai import AsyncOpenAI
+import os
 import json
+from dotenv import load_dotenv
+from openai import AsyncOpenAI
+
+# 讀取 .env 檔案中的環境變數
+load_dotenv()
 
 # Configuration for the local LLM service
-LLM_API_URL = "http://localhost:1234/v1"
+# LLM_API_URL = "http://localhost:1234/v1"
+OPENROUTER_API_URL = "https://openrouter.ai/api/v1"
+# 使用 os.getenv() 來取得 API 金鑰
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 # Initialize the OpenAI client to point to the local server
 # This mimics the successful connection pattern.
 client = AsyncOpenAI(
-    api_key="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",
-    base_url="https://openrouter.ai/api/v1",)
+    api_key= OPENROUTER_API_KEY,
+    base_url= OPENROUTER_API_URL)
 
 # A simpler, more direct prompt that is more likely to be compatible with various models.
 PROMPT_TEMPLATE = {
