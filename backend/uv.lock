@@ -1495,6 +1495,7 @@ dependencies = [
     { name = "openai" },
     { name = "opencv-python" },
     { name = "paho-mqtt" },
+    { name = "python-dotenv" },
     { name = "realtimestt" },
 ]
 
@@ -1506,6 +1507,7 @@ requires-dist = [
     { name = "openai", specifier = ">=1.107.0" },
     { name = "opencv-python" },
     { name = "paho-mqtt" },
+    { name = "python-dotenv", specifier = ">=1.1.1" },
     { name = "realtimestt" },
 ]
 

@@ -12,6 +12,7 @@ dependencies = [
    "httpx",
    "realtimestt",
    "openai>=1.107.0",
+   "python-dotenv>=1.1.1",
 ]
 
 
