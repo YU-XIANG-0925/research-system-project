@@ -1,0 +1,99 @@
+openapi: 3.0.0
+info:
+  title: Speech Coaching System API
+  version: 0.1.0
+paths:
+  /scripts:
+    post:
+      summary: Upload a new script
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Script uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Script'
+  /scripts/{scriptId}:
+    get:
+      summary: Get a script by ID
+      parameters:
+        - name: scriptId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A single script
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Script'
+    put:
+      summary: Update a script
+      parameters:
+        - name: scriptId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Script'
+      responses:
+        '200':
+          description: Script updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Script'
+  /ws/speech-to-text/{scriptId}:
+    # WebSocket endpoint for real-time speech-to-text and cue delivery
+    # This is not representable in OpenAPI 3.0.0, but is documented here for clarity.
+    # The actual implementation will use WebSockets.
+    get:
+      summary: WebSocket for real-time presentation
+      description: Handles speech-to-text and sends back cues.
+
+components:
+  schemas:
+    Script:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        annotations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Annotation'
+    Annotation:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum: [gesture, emotion]
+        value:
+          type: string
+        start_index:
+          type: integer
+        end_index:
+          type: integer
