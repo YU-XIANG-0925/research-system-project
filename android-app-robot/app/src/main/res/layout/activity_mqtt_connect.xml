@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 在最外層加入 ScrollView -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <!-- 將原本的 ConstraintLayout 放在 ScrollView 內部 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- 頁面標題 -->
+
+        <!-- Broker 地址標籤 -->
+
+        <!-- Broker 地址輸入框 -->
+
+        <!-- Port 標籤 -->
+
+        <TextView
+            android:id="@+id/textView_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MQTT 連線設定"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView_broker"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="20dp"
+            android:text="Broker 地址:"
+            android:textSize="22sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView_title" />
+
+        <EditText
+            android:id="@+id/editText_broker"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:ems="10"
+            android:hint="例如: tcp://broker.hivemq.com"
+            android:inputType="textUri"
+            android:text="tcp://broker.mqttgo.io"
+            android:textSize="22sp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/textView_broker"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/textView_broker" />
+
+        <TextView
+            android:id="@+id/textView_port"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Port:"
+            android:textSize="22sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView_broker" />
+
+        <!-- Port 輸入框 -->
+        <EditText
+            android:id="@+id/editText_port"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:ems="10"
+            android:hint="例如: 1883"
+            android:inputType="number"
+            android:text="1883"
+            android:textSize="22sp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/textView_port"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView_port" />
+
+        <!-- Client ID 標籤 -->
+        <TextView
+            android:id="@+id/textView_clientId"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Client ID:"
+            android:textSize="22sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView_port" />
+
+        <!-- Client ID 輸入框 -->
+        <EditText
+            android:id="@+id/editText_clientId"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:ems="10"
+            android:hint="（留空則自動產生）"
+            android:inputType="text"
+            android:textSize="22sp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/textView_clientId"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView_clientId" />
+
+        <!-- Topic 標籤 -->
+        <TextView
+            android:id="@+id/textView_topic"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="訂閱主題:"
+            android:textSize="22sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView_clientId" />
+
+        <!-- Topic 輸入框 -->
+        <EditText
+            android:id="@+id/editText_topic"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:ems="10"
+            android:hint="例如: nuwa/command"
+            android:inputType="text"
+            android:text="nuwa/command"
+            android:textSize="22sp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/textView_topic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView_topic" />
+
+        <!-- 連線按鈕 -->
+
+        <!-- 連線狀態文字 -->
+        <Button
+            android:id="@+id/button_connect"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:text="連線"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editText_topic" />
+
+        <TextView
+            android:id="@+id/textView_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="狀態：尚未連線"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_connect" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
