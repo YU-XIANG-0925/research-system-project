@@ -1,0 +1,21 @@
+# Research for Speech Coaching System
+
+## Script File Formats (FR-001)
+- **Decision**: Support `.txt` initially.
+- **Rationale**: Plain text is the simplest to parse and handle. Support for `.docx` or `.pdf` can be added later as an enhancement.
+- **Alternatives considered**: `.docx` (requires python-docx), `.pdf` (requires PyPDF2). These add complexity that is not needed for the initial version.
+
+## Export Format (FR-004)
+- **Decision**: Export as a JSON file containing the script and annotations.
+- **Rationale**: JSON is a structured format that is easy to parse for both machines and humans. It can be easily used to re-import the annotated script into the system.
+- **Alternatives considered**: Exporting back to the original format. This would be complex to implement, especially for formats like `.docx` or `.pdf`.
+
+## Video Analysis and Manual Adjustment (FR-006)
+- **Decision**: For manual adjustment, provide a simple interface to name an action and associate it with a command to be sent via MQTT. For video analysis, use `mediapipe` to detect poses and allow the user to save a specific pose as a custom action.
+- **Rationale**: This provides a balance between user control and automation. Manual adjustment is simple and direct. Video analysis with `mediapipe` is a powerful feature that can be implemented with existing libraries.
+- **Alternatives considered**: More complex video analysis techniques, which would require more research and development time.
+
+## Connection Parameters (FR-010)
+- **Decision**: The system will require the MQTT broker's IP address, port, and topic for publishing commands.
+- **Rationale**: These are the standard parameters required for MQTT communication.
+- **Alternatives considered**: Other communication protocols like WebSockets, but MQTT is more suitable for IoT device communication.

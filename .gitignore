@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Python-generated files
 __pycache__/
 *.py[oc]
@@ -9,3 +10,56 @@ wheels/
 # Virtual environments
 .venv
 .env
+=======
+# Gemini CLI and local development files
+.gemini/
+.specify/
+GEMINI.md
+
+# Environment variables
+backend/.env
+
+# Backup files
+*.tar.gz
+robot_backup.tar.gz
+
+# Tools and SDKs
+tools/
+
+# Temporary scripts
+migrate_to_androidx.sh
+
+# Original samples
+samples/
+
+### Android ###
+# Generated files
+.gradle/
+build/
+.externalNativeBuild/
+
+# Local configuration
+local.properties
+
+# IDE files (Android Studio, IntelliJ)
+*.iml
+.idea/
+
+# macOS
+.DS_Store
+
+# Keystore files
+*.jks
+*.keystore
+
+# Built application files
+*.apk
+*.aab
+*.ap_
+
+# Files for the Dalvik VM
+*.dex
+
+# Java class files
+*.class
+>>>>>>> temp-main-branch

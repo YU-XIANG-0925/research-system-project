@@ -1,0 +1,35 @@
+# Phase 1: Foundational Artifacts
+
+## Data Model (`data-model.md`)
+
+### Entities
+
+- **Robot**: 
+  - `motors`: A list of `Motor` objects.
+- **Motor**:
+  - `id`: A unique identifier for the motor.
+  - `angle`: The current angle of the motor.
+- **RobotAction**:
+  - `name`: The name of the action.
+  - `sequence`: A series of motor angle configurations.
+
+## API Contracts (`contracts/`)
+
+### MQTT Topics
+
+- `robot/angles/status`: For publishing the robot's current motor angles.
+- `robot/action/command`: For sending commands to the robot.
+
+## Quickstart Guide (`quickstart.md`)
+
+### Setup
+
+1. Clone the repository: `git clone https://github.com/YU-XIANG-0925/NuwaSDKExample.git`
+2. Copy the SDK from `tools` to `app/libs`.
+3. Configure the MQTT broker details in the app.
+
+### Running the App
+
+1. Build and run the Android application.
+2. Connect to the MQTT broker.
+3. Navigate to the desired function page.

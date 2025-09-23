@@ -1,0 +1,124 @@
+# Feature Specification: Speech Coaching System
+
+**Feature Branch**: `001-`
+**Created**: 2025-09-12
+**Status**: Draft
+**Input**: User description: "開發一個演講能力輔助系統，旨在幫助使用者提升演講技巧與表現力。核心功能是讓使用者上傳演講稿，系統能自動標記出手勢和情緒建議。使用者可以編輯這些標記，並在需要時匯出。此外，系統應允許使用者透過影片分析或手動調整來建立自定義的機器人動作庫。演講時，系統需提供一個結合提詞器與即時提示的介面，透過語音辨識來同步講稿進度，並在適當時機顯示對應的情緒與手勢提醒。最後，使用者應能夠設定與外部硬體（如機器人）的連線參數。"
+
+## Execution Flow (main)
+```
+1. Parse user description from Input
+   → If empty: ERROR "No feature description provided"
+2. Extract key concepts from description
+   → Identify: actors, actions, data, constraints
+3. For each unclear aspect:
+   → Mark with [NEEDS CLARIFICATION: specific question]
+4. Fill User Scenarios & Testing section
+   → If no clear user flow: ERROR "Cannot determine user scenarios"
+5. Generate Functional Requirements
+   → Each requirement must be testable
+   → Mark ambiguous requirements
+6. Identify Key Entities (if data involved)
+7. Run Review Checklist
+   → If any [NEEDS CLARIFICATION]: WARN "Spec has uncertainties"
+   → If implementation details found: ERROR "Remove tech details"
+8. Return: SUCCESS (spec ready for planning)
+```
+
+---
+
+## ⚡ Quick Guidelines
+- ✅ Focus on WHAT users need and WHY
+- ❌ Avoid HOW to implement (no tech stack, APIs, code structure)
+- 👥 Written for business stakeholders, not developers
+
+### Section Requirements
+- **Mandatory sections**: Must be completed for every feature
+- **Optional sections**: Include only when relevant to the feature
+- When a section doesn't apply, remove it entirely (don't leave as "N/A")
+
+### For AI Generation
+When creating this spec from a user prompt:
+1. **Mark all ambiguities**: Use [NEEDS CLARIFICATION: specific question] for any assumption you'd need to make
+2. **Don't guess**: If the prompt doesn't specify something (e.g., "login system" without auth method), mark it
+3. **Think like a tester**: Every vague requirement should fail the "testable and unambiguous" checklist item
+4. **Common underspecified areas**:
+   - User types and permissions
+   - Data retention/deletion policies
+   - Performance targets and scale
+   - Error handling behaviors
+   - Integration requirements
+   - Security/compliance needs
+
+---
+
+## User Scenarios & Testing *(mandatory)*
+
+### Primary User Story
+As a user, I want to upload my speech script and receive automatic suggestions for gestures and emotional delivery. I want to be able to customize these suggestions, practice with a teleprompter that shows me these cues in real-time, and connect to a robot to see my presentation come to life, so that I can improve my public speaking skills.
+
+### Acceptance Scenarios
+1.  **Given** a user has a speech script file, **When** they upload the file, **Then** the system should display the script content with automatically generated gesture and emotion markers.
+2.  **Given** an annotated script is open, **When** the user clicks on a marker, **Then** they should be able to edit or delete the suggestion.
+3.  **Given** a user is in presentation mode, **When** they start speaking, **Then** the teleprompter should scroll in sync with their voice and display upcoming gesture/emotion cues.
+4.  **Given** a user has a library of custom robot actions, **When** they annotate a script, **Then** they should be able to assign those custom actions as suggestions.
+5.  **Given** the system is connected to a robot, **When** a cue is displayed on the teleprompter, **Then** the robot should perform the corresponding action.
+
+### Edge Cases
+- What happens when the user uploads a file that is not a text-based script (e.g., an image)?
+- How does the system handle speech recognition if the user goes off-script?
+- What happens if the connection to the external hardware is lost during a presentation?
+
+## Requirements *(mandatory)*
+
+### Functional Requirements
+- **FR-001**: System MUST allow users to upload a speech script. [NEEDS CLARIFICATION: What file formats are supported? .txt, .docx, .pdf?]
+- **FR-002**: System MUST analyze the script and automatically suggest gesture and emotion cues.
+- **FR-003**: Users MUST be able to edit, add, or delete these cues.
+- **FR-004**: Users MUST be able to export the annotated script. [NEEDS CLARIFICATION: What format will the export be? The original format with annotations, or a specific format?]
+- **FR-005**: System MUST provide an interface for creating and managing a custom library of robot actions.
+- **FR-006**: Custom actions can be created by [NEEDS CLARIFICATION: "video analysis or manual adjustment" needs more detail. What does video analysis entail? What is the manual adjustment interface like?]
+- **FR-007**: System MUST provide a teleprompter view that displays the script.
+- **FR-008**: The teleprompter MUST use speech recognition to automatically scroll the text as the user speaks.
+- **FR-009**: The teleprompter MUST display gesture and emotion cues at the appropriate times.
+- **FR-010**: System MUST allow users to configure connection settings for external hardware (e.g., a robot). [NEEDS CLARIFICATION: What connection parameters are needed? IP address, port, protocol?]
+
+### Key Entities *(include if feature involves data)*
+- **User**: The person using the system to improve their speech.
+- **Script**: The text content of the speech, including annotations.
+- **Annotation**: A specific suggestion for a gesture or emotion at a point in the script.
+- **Custom Action**: A user-defined robot action that can be linked to an annotation.
+- **Hardware Configuration**: Settings for connecting to an external device.
+
+---
+
+## Review & Acceptance Checklist
+*GATE: Automated checks run during main() execution*
+
+### Content Quality
+- [ ] No implementation details (languages, frameworks, APIs)
+- [ ] Focused on user value and business needs
+- [ ] Written for non-technical stakeholders
+- [ ] All mandatory sections completed
+
+### Requirement Completeness
+- [ ] No [NEEDS CLARIFICATION] markers remain
+- [ ] Requirements are testable and unambiguous
+- [ ] Success criteria are measurable
+- [ ] Scope is clearly bounded
+- [ ] Dependencies and assumptions identified
+
+---
+
+## Execution Status
+*Updated by main() during processing*
+
+- [ ] User description parsed
+- [ ] Key concepts extracted
+- [ ] Ambiguities marked
+- [ ] User scenarios defined
+- [ ] Requirements generated
+- [ ] Entities identified
+- [ ] Review checklist passed
+
+---
