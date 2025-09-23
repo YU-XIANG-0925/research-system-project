@@ -1,0 +1,45 @@
+# Data Model for Speech Coaching System
+
+## Entities
+
+### User
+- **Description**: A user of the system.
+- **Fields**:
+    - `id`: string (unique identifier)
+    - `name`: string
+    - `email`: string
+
+### Script
+- **Description**: A speech script uploaded by the user.
+- **Fields**:
+    - `id`: string (unique identifier)
+    - `user_id`: string (foreign key to User)
+    - `title`: string
+    - `content`: string (the full text of the speech)
+    - `annotations`: list of Annotation objects
+
+### Annotation
+- **Description**: A suggestion for a gesture or emotion at a specific point in the script.
+- **Fields**:
+    - `id`: string (unique identifier)
+    - `type`: string ("gesture" or "emotion")
+    - `value`: string (e.g., "raise hand", "smile")
+    - `start_index`: integer (the starting character index in the script content)
+    - `end_index`: integer (the ending character index in the script content)
+
+### CustomAction
+- **Description**: A user-defined robot action.
+- **Fields**:
+    - `id`: string (unique identifier)
+    - `user_id`: string (foreign key to User)
+    - `name`: string
+    - `mqtt_command`: string (the command to be sent to the robot)
+
+### HardwareConfiguration
+- **Description**: Connection settings for external hardware.
+- **Fields**:
+    - `id`: string (unique identifier)
+    - `user_id`: string (foreign key to User)
+    - `broker_address`: string
+    - `broker_port`: integer
+    - `topic`: string
