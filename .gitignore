@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Python-generated files
 __pycache__/
 *.py[oc]
@@ -10,7 +9,6 @@ wheels/
 # Virtual environments
 .venv
 .env
-=======
 # Gemini CLI and local development files
 .gemini/
 .specify/
@@ -30,7 +28,7 @@ tools/
 migrate_to_androidx.sh
 
 # Original samples
-samples/
+# samples/
 
 ### Android ###
 # Generated files
@@ -62,4 +60,6 @@ local.properties
 
 # Java class files
 *.class
->>>>>>> temp-main-branch
+# BMAD (local only)
+.bmad-core/
+.bmad-*/
