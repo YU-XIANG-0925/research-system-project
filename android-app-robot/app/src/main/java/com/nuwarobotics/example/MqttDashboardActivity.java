@@ -2,8 +2,12 @@ package com.nuwarobotics.example;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.RemoteException;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -12,10 +16,12 @@ import com.google.gson.reflect.TypeToken;
 import com.nuwarobotics.service.IClientId;
 import com.nuwarobotics.service.agent.NuwaRobotAPI;
 import com.nuwarobotics.service.agent.RobotEventListener;
+import com.nuwarobotics.service.facecontrol.IonCompleteListener;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,12 +32,15 @@ public class MqttDashboardActivity extends AppCompatActivity implements MqttMana
 
     private TextView textViewLog;
     private Map<String, TextView> motorTextViews = new HashMap<>();
+    private ListView listViewMotions;
 
     private NuwaRobotAPI mRobotAPI;
     private IClientId mIClientId;
     private boolean isNuwaApiReady = false;
 
     private Gson gson = new Gson();
+    private Handler mqttPublishHandler = new Handler();
+    private List<String> motionList = new ArrayList<>();
 
     private static class MotorCommand {
         String motorId;
@@ -44,25 +53,46 @@ public class MqttDashboardActivity extends AppCompatActivity implements MqttMana
         setContentView(R.layout.activity_mqtt_dashboard);
 
         if (!MqttManager.getInstance().isConnected()) {
-            Toast.makeText(this, "MQTT not connected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "MQTT is not connected", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
         bindViews();
         initNuwaSdk();
+
+        listViewMotions.setOnItemClickListener((parent, view, position, id) -> {
+            if (isNuwaApiReady && mRobotAPI != null) {
+                String motionName = motionList.get(position);
+                logMessage("Playing motion: " + motionName);
+                try {
+                    mRobotAPI.playMotion(motionName, new IonCompleteListener.Stub() {
+                        @Override
+                        public void onComplete(String process_name) throws RemoteException {
+                            runOnUiThread(() -> {
+                                logMessage("Motion completed: " + process_name);
+                            });
+                        }
+                    });
+                } catch (Exception e) {
+                    logMessage("Error playing motion: " + e.getMessage());
+                }
+            }
+        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         MqttManager.getInstance().setListener(this);
+        startPublishingMotorAngles();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         MqttManager.getInstance().removeListener();
+        stopPublishingMotorAngles();
     }
 
     @Override
@@ -79,10 +109,48 @@ public class MqttDashboardActivity extends AppCompatActivity implements MqttMana
 
         if (isEmulator()) {
             isNuwaApiReady = true;
+            onNuwaSdkReady();
         } else {
             mRobotAPI.registerRobotEventListener(robotEventListener);
         }
     }
+
+    private void onNuwaSdkReady() {
+        // Get motion list and set adapter
+        motionList = mRobotAPI.getMotionList();
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, motionList);
+        listViewMotions.setAdapter(adapter);
+
+        // Start publishing motor angles
+        startPublishingMotorAngles();
+    }
+
+    private void startPublishingMotorAngles() {
+        mqttPublishHandler.postDelayed(publishRunnable, 1000);
+    }
+
+    private void stopPublishingMotorAngles() {
+        mqttPublishHandler.removeCallbacks(publishRunnable);
+    }
+
+    private Runnable publishRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (isNuwaApiReady && mRobotAPI != null) {
+                // This is an assumed method. Replace with the actual method if different.
+                // Map<String, Float> motorAngles = mRobotAPI.getMotorAngles();
+                // As a placeholder, I will create some dummy data.
+                Map<String, Float> motorAngles = new HashMap<>();
+                motorAngles.put("NECK_Y", 10.0f);
+                motorAngles.put("NECK_Z", 20.0f);
+
+                String jsonPayload = gson.toJson(motorAngles);
+                MqttManager.getInstance().publish(jsonPayload);
+                logMessage("Published motor angles: " + jsonPayload);
+            }
+            mqttPublishHandler.postDelayed(this, 1000);
+        }
+    };
 
     @Override
     public void onMessageArrived(String topic, MqttMessage message) {
@@ -151,10 +219,11 @@ public class MqttDashboardActivity extends AppCompatActivity implements MqttMana
     private void bindViews() {
         textViewLog = findViewById(R.id.textView_log);
         textViewLog.setText("");
+        listViewMotions = findViewById(R.id.listView_motions);
 
         motorTextViews.put("NECK_Y", (TextView) findViewById(R.id.textView_neck_y));
         motorTextViews.put("NECK_Z", (TextView) findViewById(R.id.textView_neck_z));
-        motorTextViews.put("RIGHT_SHOULDER_Z", (TextView) findViewById(R.id.textView_r_shoulder_z));
+        motorTextViews.put("RIGHT_SHOULDE_Z", (TextView) findViewById(R.id.textView_r_shoulder_z));
         motorTextViews.put("LEFT_SHOULDER_Z", (TextView) findViewById(R.id.textView_l_shoulder_z));
         motorTextViews.put("RIGHT_SHOULDER_Y", (TextView) findViewById(R.id.textView_r_shoulder_y));
         motorTextViews.put("LEFT_SHOULDER_Y", (TextView) findViewById(R.id.textView_l_shoulder_y));
@@ -185,6 +254,7 @@ public class MqttDashboardActivity extends AppCompatActivity implements MqttMana
         @Override
         public void onWikiServiceStart() {
             isNuwaApiReady = true;
+            runOnUiThread(() -> onNuwaSdkReady());
         }
         @Override
         public void onWikiServiceStop() { isNuwaApiReady = false; }
