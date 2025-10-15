@@ -46,6 +46,14 @@
             android:text="手動調整機器人動作"
             android:textSize="18sp" />
 
+        <Button
+            android:id="@+id/btn_test_query_motion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="TEST"
+            android:textSize="18sp" />
+
     </LinearLayout>
 
 </RelativeLayout>

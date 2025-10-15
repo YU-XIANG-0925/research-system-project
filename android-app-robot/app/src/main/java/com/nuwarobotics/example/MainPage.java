@@ -7,6 +7,8 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.nuwarobotics.example.motion.demo.QueryMotionActivity;
+
 public class MainPage extends AppCompatActivity implements View.OnClickListener {
 
     @Override
@@ -18,11 +20,13 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
         Button btnMqttConnect = findViewById(R.id.btn_mqtt_connect);
         Button btnRobotDashboard = findViewById(R.id.btn_robot_dashboard);
         Button btnManualAdjustment = findViewById(R.id.btn_manual_adjustment);
+        Button btnTestQueryMotion = findViewById(R.id.btn_test_query_motion);
 
         // 設定點擊監聽器
         btnMqttConnect.setOnClickListener(this);
         btnRobotDashboard.setOnClickListener(this);
         btnManualAdjustment.setOnClickListener(this);
+        btnTestQueryMotion.setOnClickListener(this);
     }
 
     @Override
@@ -40,6 +44,10 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
         } else if (id == R.id.btn_manual_adjustment) {
             // 前往新功能測試頁面
             intent = new Intent(this, MqttMotorDataActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.btn_test_query_motion) {
+            // 前往 QueryMotionActivity
+            intent = new Intent(this, QueryMotionActivity.class);
             startActivity(intent);
         }
     }
