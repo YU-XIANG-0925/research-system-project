@@ -63,3 +63,10 @@ local.properties
 # BMAD (local only)
 .bmad-core/
 .bmad-*/
+
+### Project Specific ###
+samples/**
+specs/**
+web-bundles/**
+AGENTS.md
+*.log
