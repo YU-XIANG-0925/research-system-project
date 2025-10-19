@@ -21,13 +21,18 @@ public class NuwaApplication extends Application implements RobotEventListener {
 
     // MQTT 設定
     private static final String MQTT_BROKER_URL = "wss://broker.mqttgo.io:8084/mqtt";
-    private static final String MQTT_CLIENT_ID = "nuwa_robot_app"; // 可以自訂
-    private static final String MQTT_TOPIC = "nuwa/command";
+    private String mqttClientId; // 動態生成
+    public static final String MQTT_PUB_TOPIC = "nuwa/command/out";
+    public static final String MQTT_SUB_TOPIC = "nuwa/command/in";
+
 
     @Override
     public void onCreate() {
         super.onCreate();
         mContext = getApplicationContext();
+
+        // 動態生成唯一的 Client ID
+        mqttClientId = "nuwa_robot_app_" + java.util.UUID.randomUUID().toString();
 
         // 初始化 Nuwa Robot API
         IClientId clientId = new IClientId(this.getPackageName());
@@ -40,12 +45,22 @@ public class NuwaApplication extends Application implements RobotEventListener {
     }
 
     private void connectToMqtt() {
-        MqttManager.getInstance().connect(mContext, MQTT_BROKER_URL, MQTT_CLIENT_ID, MQTT_TOPIC, new IMqttActionListener() {
+        MqttManager.getInstance().connect(mContext, MQTT_BROKER_URL, mqttClientId, new IMqttActionListener() {
             @Override
             public void onSuccess(IMqttToken asyncActionToken) {
                 Log.d(TAG, "MQTT 連線成功");
                 // 連線成功後訂閱主題
-                MqttManager.getInstance().subscribe();
+                MqttManager.getInstance().subscribe(MQTT_SUB_TOPIC, new IMqttActionListener() {
+                    @Override
+                    public void onSuccess(IMqttToken asyncActionToken) {
+                        Log.d(TAG, "成功訂閱主題: " + MQTT_SUB_TOPIC);
+                    }
+
+                    @Override
+                    public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                        Log.e(TAG, "訂閱主題失敗: " + MQTT_SUB_TOPIC);
+                    }
+                });
             }
 
             @Override

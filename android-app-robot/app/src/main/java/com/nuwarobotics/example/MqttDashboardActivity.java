@@ -145,8 +145,8 @@ public class MqttDashboardActivity extends AppCompatActivity implements MqttMana
                 motorAngles.put("NECK_Z", 20.0f);
 
                 String jsonPayload = gson.toJson(motorAngles);
-                MqttManager.getInstance().publish(jsonPayload);
-                logMessage("Published motor angles: " + jsonPayload);
+                MqttManager.getInstance().publish(NuwaApplication.MQTT_PUB_TOPIC, jsonPayload);
+                logMessage("Published to " + NuwaApplication.MQTT_PUB_TOPIC + ": " + jsonPayload);
             }
             mqttPublishHandler.postDelayed(this, 1000);
         }
@@ -163,24 +163,27 @@ public class MqttDashboardActivity extends AppCompatActivity implements MqttMana
 
     private void handleMotorCommand(String jsonPayload) {
         try {
-            Type listType = new TypeToken<List<MotorCommand>>() {}.getType();
-            List<MotorCommand> commands = gson.fromJson(jsonPayload, listType);
+            Type mapType = new TypeToken<Map<String, Float>>() {}.getType();
+            Map<String, Float> motorAngles = gson.fromJson(jsonPayload, mapType);
 
-            if (commands == null || commands.isEmpty()) {
+            if (motorAngles == null || motorAngles.isEmpty()) {
                 logMessage("收到的指令為空或格式不符。");
                 return;
             }
 
-            for (MotorCommand command : commands) {
-                updateMotorAngle(command.motorId, command.angle);
+            for (Map.Entry<String, Float> entry : motorAngles.entrySet()) {
+                String motorId = entry.getKey();
+                float angle = entry.getValue();
+
+                updateMotorAngle(motorId, angle);
 
                 if (!isEmulator() && isNuwaApiReady && mRobotAPI != null) {
-                    int motorId = getMotorIdFromString(command.motorId);
-                    if (motorId != -1) {
-                        logMessage("控制馬達: " + command.motorId + " -> " + command.angle);
-                        mRobotAPI.ctlMotor(motorId, command.angle, 45);
+                    int motorApiId = getMotorIdFromString(motorId);
+                    if (motorApiId != -1) {
+                        logMessage("控制馬達: " + motorId + " -> " + angle);
+                        mRobotAPI.ctlMotor(motorApiId, angle, 45);
                     } else {
-                        logMessage("警告：找不到馬達 ID '" + command.motorId + "'");
+                        logMessage("警告：找不到馬達 ID '" + motorId + "'");
                     }
                 }
             }

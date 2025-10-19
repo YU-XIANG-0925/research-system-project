@@ -142,35 +142,53 @@ public class MqttConnectActivity extends AppCompatActivity {
         String brokerHost = editTextBroker.getText().toString().trim();
         String port = editTextPort.getText().toString().trim();
         final String topic = editTextTopic.getText().toString().trim();
-        String clientId = editTextClientId.getText().toString().trim();
+        String clientIdString = editTextClientId.getText().toString().trim();
 
         if (brokerHost.isEmpty() || port.isEmpty() || topic.isEmpty()) {
             Toast.makeText(this, "Broker 地址、Port 和訂閱主題不能為空", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (clientId.isEmpty()) {
-            clientId = MqttClient.generateClientId();
+        if (clientIdString.isEmpty()) {
+            clientIdString = MqttClient.generateClientId();
         }
+        final String clientId = clientIdString;
 
-        String serverUri = brokerHost + ":" + port;
+        String serverUriString = brokerHost + ":" + port;
         if (!brokerHost.startsWith("tcp://") && !brokerHost.startsWith("wss://")) {
-            serverUri = "tcp://" + serverUri;
+            serverUriString = "tcp://" + serverUriString;
         }
+        final String serverUri = serverUriString;
 
         textViewStatus.setText("狀態：正在連線...");
         buttonConnect.setEnabled(false);
 
-        MqttManager.getInstance().connect(getApplicationContext(), serverUri, clientId, topic, new IMqttActionListener() {
+        MqttManager.getInstance().connect(getApplicationContext(), serverUri, clientId, new IMqttActionListener() {
             @Override
             public void onSuccess(IMqttToken asyncActionToken) {
                 Log.d(TAG, "MQTT 連線成功");
                 speak("MQTT 連線成功");
-                MqttManager.getInstance().subscribe();
-                runOnUiThread(() -> {
-                    textViewStatus.setText("狀態：已連線");
-                    Toast.makeText(MqttConnectActivity.this, "連線成功", Toast.LENGTH_SHORT).show();
-                    finish();
+
+                // Subscribe to the topic from the input field
+                MqttManager.getInstance().subscribe(topic, new IMqttActionListener() {
+                    @Override
+                    public void onSuccess(IMqttToken asyncActionToken) {
+                        Log.d(TAG, "成功訂閱主題: " + topic);
+                        runOnUiThread(() -> {
+                            textViewStatus.setText("狀態：已連線並訂閱 " + topic);
+                            Toast.makeText(MqttConnectActivity.this, "連線並訂閱成功", Toast.LENGTH_SHORT).show();
+                            finish();
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                         Log.e(TAG, "訂閱主題失敗: " + topic);
+                         speak("連線成功但訂閱主題失敗");
+                         runOnUiThread(()-> {
+                            buttonConnect.setEnabled(true);
+                         });
+                    }
                 });
             }
 

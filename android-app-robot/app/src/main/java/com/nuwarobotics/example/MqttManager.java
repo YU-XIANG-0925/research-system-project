@@ -16,7 +16,6 @@ public class MqttManager {
     private static final String TAG = "MqttManager";
     private static MqttManager instance;
     private MqttAndroidClient mqttClient;
-    private String topic;
 
     private MqttMessageListener listener;
 
@@ -43,8 +42,15 @@ public class MqttManager {
         this.listener = null;
     }
 
-    public void connect(Context context, String serverUri, String clientId, String topic, IMqttActionListener listener) {
-        this.topic = topic;
+    public void connect(Context context, String serverUri, String clientId, IMqttActionListener listener) {
+        if (mqttClient != null && mqttClient.isConnected()) {
+            Log.d(TAG, "Already connected.");
+            if (listener != null) {
+                listener.onSuccess(null);
+            }
+            return;
+        }
+
         mqttClient = new MqttAndroidClient(context.getApplicationContext(), serverUri, clientId);
         mqttClient.setCallback(new MqttCallback() {
             @Override
@@ -54,7 +60,7 @@ public class MqttManager {
 
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
-                Log.d(TAG, "Message arrived: " + new String(message.getPayload()));
+                Log.d(TAG, "Message arrived from topic: " + topic);
                 if (MqttManager.this.listener != null) {
                     MqttManager.this.listener.onMessageArrived(topic, message);
                 }
@@ -67,6 +73,7 @@ public class MqttManager {
         });
 
         MqttConnectOptions options = new MqttConnectOptions();
+        options.setCleanSession(true);
         try {
             mqttClient.connect(options, null, listener);
         } catch (MqttException e) {
@@ -74,28 +81,18 @@ public class MqttManager {
         }
     }
 
-    public void subscribe() {
-        if (mqttClient != null && mqttClient.isConnected() && topic != null) {
+    public void subscribe(String topic, IMqttActionListener listener) {
+        if (mqttClient != null && mqttClient.isConnected()) {
             try {
-                mqttClient.subscribe(topic, 0, null, new IMqttActionListener() {
-                    @Override
-                    public void onSuccess(IMqttToken asyncActionToken) {
-                        Log.d(TAG, "Subscribed to " + topic);
-                    }
-
-                    @Override
-                    public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                        Log.d(TAG, "Failed to subscribe to " + topic);
-                    }
-                });
+                mqttClient.subscribe(topic, 0, null, listener);
             } catch (MqttException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public void publish(String payload) {
-        if (mqttClient != null && mqttClient.isConnected() && topic != null) {
+    public void publish(String topic, String payload) {
+        if (mqttClient != null && mqttClient.isConnected()) {
             try {
                 MqttMessage message = new MqttMessage(payload.getBytes());
                 mqttClient.publish(topic, message);
