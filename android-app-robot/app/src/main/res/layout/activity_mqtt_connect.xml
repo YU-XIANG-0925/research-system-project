@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:ems="10"
-            android:hint="例如: tcp://broker.mqttgo.io"
+            android:hint="例如: tcp://broker.hivemq.com"
             android:inputType="textUri"
             android:text="tcp://broker.mqttgo.io"
             android:textSize="22sp"
