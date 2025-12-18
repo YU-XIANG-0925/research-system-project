@@ -1,40 +1,42 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>演講腳本自動標記系統 - 提詞模式</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="presenter-view">
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>人機協同展演系統</title>
 
-        <div id="upload-panel" class="panel">
-            <div class="panel-title">
-                <span>上傳與控制</span>
-            </div>
-            <div id="upload-area">
-                <span>📂 點擊此處上傳講稿 (.txt)</span>
-            </div>
-            <input type="file" id="script-input" accept=".txt" style="display: none;" />
-            <button id="process-btn" disabled>開始自動標記</button>
-            <div id="loading-indicator" style="display: none;">處理中，請稍候...</div>
-        </div>
-        
-        <div id="gesture-cue-panel" class="panel">
-            <div class="panel-title">手勢提示 (Gesture Cues)</div>
-            <div id="gesture-display" class="placeholder">此處將顯示建議手勢</div>
-        </div>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-        <div id="presenter-notes-panel" class="panel">
-            <div class="panel-title">提詞區 (Presenter Notes)</div>
-            <div id="notes-content">
-                <p>請先上傳您的講稿檔案，標記後的內容將會顯示在這裡。</p>
-            </div>
-        </div>
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
 
-    </div>
-    
-    <script src="script.js"></script>
-</body>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="bg-gray-50 text-slate-800 font-sans min-h-screen flex flex-col">
+    <!-- Navbar Container -->
+    <div id="navbar-container"></div>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 w-full relative container mx-auto px-4 py-6">
+      <!-- Home Page -->
+      <div id="page-home" class="page-content hidden"></div>
+
+      <!-- Gesture Coach Page -->
+      <div id="page-coach" class="page-content hidden"></div>
+
+      <!-- Settings Page -->
+      <div id="page-settings" class="page-content hidden"></div>
+
+      <!-- API Tester Page -->
+      <div id="page-api-tester" class="page-content hidden"></div>
+    </main>
+
+    <!-- Scripts -->
+    <script type="module" src="js/main.js"></script>
+  </body>
 </html>

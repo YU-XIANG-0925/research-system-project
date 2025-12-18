@@ -1,0 +1,43 @@
+PS D:\Documents\GitHub\research-system-project> uv run fastapi dev app/main.py
+
+   FastAPI   Starting development server 🚀
+ 
+             Searching for package file structure from directories with
+             __init__.py files
+D:\Documents\GitHub\research-system-project\.venv\lib\site-packages\ctranslate2\__init__.py:8: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+             Importing from
+             D:\Documents\GitHub\research-system-project\app
+ 
+    module   🐍 main.py
+ 
+      code   Importing the FastAPI app object from the module with the 
+             following code:
+ 
+             from main import app
+
+       app   Using import string: main:app
+
+    server   Server started at http://127.0.0.1:8000
+    server   Documentation at http://127.0.0.1:8000/docs
+
+       tip   Running in development mode, for production use: fastapi  
+             run
+
+             Logs:
+
+      INFO   Will watch for changes in these directories:
+             ['D:\\Documents\\GitHub\\research-system-project']        
+      INFO   Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to 
+             quit)
+      INFO   Started reloader process [36608] using WatchFiles
+D:\Documents\GitHub\research-system-project\.venv\lib\site-packages\ctranslate2\__init__.py:8: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+      INFO   Started server process [41996]
+      INFO   Waiting for application startup.
+      INFO   Application startup complete.
+      INFO   127.0.0.1:5367 - "GET / HTTP/1.1" 200
+      INFO   127.0.0.1:5367 - "GET /css/style.css HTTP/1.1" 200        
+      INFO   127.0.0.1:4365 - "GET /js/script.js HTTP/1.1" 200
+      INFO   127.0.0.1:4365 - "GET /favicon.ico HTTP/1.1" 404
+Sending request to LLM using OpenAI library...

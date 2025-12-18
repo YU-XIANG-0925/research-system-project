@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Python-generated files
 __pycache__/
 *.py[oc]
@@ -10,7 +9,7 @@ wheels/
 # Virtual environments
 .venv
 .env
-=======
+
 # Gemini CLI and local development files
 .gemini/
 .specify/
@@ -35,7 +34,6 @@ samples/
 ### Android ###
 # Generated files
 .gradle/
-build/
 .externalNativeBuild/
 
 # Local configuration
@@ -62,4 +60,3 @@ local.properties
 
 # Java class files
 *.class
->>>>>>> temp-main-branch
